@@ -1,0 +1,12 @@
+export DESIGN_NAME = ALU
+export PLATFORM    = sky130hd
+export DESIGN_HOME = /workspace/designs
+export VERILOG_FILES = $(DESIGN_HOME)/alu/src/ALU.v
+export SDC_FILE      = $(DESIGN_HOME)/alu/sky130hd/constraint.sdc
+export CORE_UTILIZATION = 40
+export CLOCK_PERIOD  = 10.0
+export TNS_END_PERCENT = 100
+export OPENROAD_HIERARCHICAL = 1
+export SWAP_ARITH_OPERATORS = 0
+export ADDER_MAP_FILE =
+export FILL_CELLS ?= sky130_fd_sc_hd__fill_1 sky130_fd_sc_hd__fill_2 sky130_fd_sc_hd__fill_4 sky130_fd_sc_hd__fill_8

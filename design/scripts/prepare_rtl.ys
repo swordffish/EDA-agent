@@ -1,0 +1,10 @@
+# prepare_rtl.ys — Convert Chisel RTL to clean standard Verilog for OpenROAD
+read_verilog /workspace/rtl/alu.v
+hierarchy -check -top ALU
+proc
+flatten
+tribuf -logic
+opt
+clean
+# Output as standard Verilog (no attributes, no Chisel syntax)
+write_verilog -noattr /workspace/results/ALU_openroad.v

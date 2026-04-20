@@ -1,0 +1,11 @@
+OpenROAD 26Q1-2754-gce7ee82f49 
+Features included (+) or not (-): +GPU +GUI +Python
+This program is licensed under the BSD-3 license. See the LICENSE file for details.
+Components of this program may be licensed under more restrictive licenses which must be honored.
+[OPENROAD] === Step 1: Reading LEF files ===
+[INFO ODB-0227] LEF file: /OpenROAD-flow-scripts/flow/platforms/sky130hd/lef/sky130_fd_sc_hd.tlef, created 13 layers, 25 vias
+[INFO ODB-0227] LEF file: /OpenROAD-flow-scripts/flow/platforms/sky130hd/lef/sky130_fd_sc_hd_merged.lef, created 441 library cells
+[OPENROAD] === Step 2: Reading Liberty library ===
+[OPENROAD] === Step 3: Reading cleaned Verilog netlist ===
+[ERROR STA-0171] /workspace/results/ALU_openroad.v line 41, syntax error
+Error: run_openroad.tcl, 30 STA-0171

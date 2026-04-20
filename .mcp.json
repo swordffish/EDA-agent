@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "orfs": {
+      "command": "node",
+      "args": ["/mnt/c/eda/hw2/mypj1/mcp-server/src/index.js"],
+      "env": {}
+    }
+  }
+}

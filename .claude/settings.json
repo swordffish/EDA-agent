@@ -1,0 +1,95 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schema.json",
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "Grep",
+      "Glob",
+      "LS",
+      "MultiEdit",
+      "NotbookEidit",
+      "NotbookEdit",
+      "TodoRead",
+      "TodoWrite",
+      "WebSearch",
+      "Bash(pip install:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(sbt:*)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Bash(firtool:*)",
+      "Bash(verilator:*)",
+      "Bash(make:*)",
+      "Bash(g++ -Os -I. -MMD -I/usr/share/verilator/include:*)",
+      "Bash(g++ -Os libALU.a libverilated.a -o sim_alu:*)",
+      "Bash(./sim_alu)",
+      "Bash(./alu_probe)",
+      "Bash(mkdir -p chisel/obj_dir/sim/logs)",
+      "Bash(make -C obj_dir -j4)",
+      "Bash(verilator:*)",
+      "Bash(docker --version)",
+      "Bash(dockerd --version)",
+      "Bash(wsl.exe -d docker-desktop -- true)",
+      "Bash(powershell.exe -Command \"Get-Service *docker* 2>&1\")",
+      "Skill(update-config)",
+      "Bash(node:*)",
+      "Bash(docker exec:*)",
+      "mcp__orfs__docker_exec",
+      "mcp__orfs__yosys",
+      "mcp__orfs__openroad",
+      "mcp__orfs__check_design",
+      "mcp__orfs__generate_config",
+      "mcp__orfs__run_flow",
+      "mcp__orfs__parse_report"
+    ]
+  },
+  "enabledMcpjsonServers": ["orfs"],
+
+  "hooks": {
+    "pre_flow_stage": {
+      "description": "Validate design inputs before running any backend flow stage",
+      "when": "before_tool:mcp__orfs__openroad",
+      "script": "hooks/pre_flow_stage.sh"
+    },
+    "post_flow_stage": {
+      "description": "Check stage result, auto-parse reports on signoff, warn on regressions",
+      "when": "after_tool:mcp__orfs__openroad",
+      "script": "hooks/post_flow_stage.sh"
+    }
+  },
+
+  "rules": [
+    {
+      "description": "Always validate RTL & SDC before running synthesis",
+      "match": { "tool": "mcp__orfs__openroad", "args": { "scriptFile": "*synth.tcl" } },
+      "require_previous": ["mcp__orfs__check_design"],
+      "severity": "error"
+    },
+    {
+      "description": "Never run routing before placement completes",
+      "match": { "tool": "mcp__orfs__openroad", "args": { "scriptFile": "*route.tcl" } },
+      "require_previous": ["mcp__orfs__openroad:place"],
+      "severity": "error"
+    },
+    {
+      "description": "Warn if clock period < 1.0 ns",
+      "match": { "tool": "mcp__orfs__generate_config", "args": { "period_lt": 1.0 } },
+      "severity": "warning"
+    },
+    {
+      "description": "Warn if core utilization > 80%",
+      "match": { "tool": "mcp__orfs__generate_config", "args": { "utilization_gt": 80 } },
+      "severity": "warning"
+    },
+    {
+      "description": "Require SDC create_clock to reference an existing port in RTL",
+      "match": { "tool": "mcp__orfs__check_design" },
+      "validate_output": "check_design_summary",
+      "severity": "error"
+    }
+  ]
+}

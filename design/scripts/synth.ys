@@ -1,0 +1,29 @@
+# synth.ys — Yosys synthesis script for ALU on sky130hd
+# ALU is purely combinational — no sequential elements to map via ABC.
+# Output as RTLIL gate-level Verilog for OpenROAD.
+
+# Read RTL sources
+read_verilog /workspace/rtl/alu.v
+
+# Check and set hierarchy
+hierarchy -check -top ALU
+
+# Elaborate
+proc
+flatten
+tribuf -logic
+opt
+
+# Technology mapping to sky130hd stdcells
+# Use simple mapping for this combinational design
+techmap -autoproc
+
+# Clean up
+opt
+clean
+
+# Statistics
+stat
+
+# Write synthesized netlist (no attributes for OpenROAD compatibility)
+write_verilog -noattr /workspace/results/ALU_synth.v
